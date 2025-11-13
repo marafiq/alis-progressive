@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Container Components */
+  .alis-container {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .alis-container-fluid {
+    @apply w-full px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Grid Components */
+  .alis-grid {
+    @apply grid gap-4;
+  }
+  
+  .alis-grid-cols-1 { @apply grid-cols-1; }
+  .alis-grid-cols-2 { @apply grid-cols-2; }
+  .alis-grid-cols-3 { @apply grid-cols-3; }
+  .alis-grid-cols-4 { @apply grid-cols-4; }
+  .alis-grid-cols-6 { @apply grid-cols-6; }
+  .alis-grid-cols-12 { @apply grid-cols-12; }
+  
+  /* Form Components */
+  .alis-form {
+    @apply space-y-6;
+  }
+  
+  .alis-form-group {
+    @apply space-y-2;
+  }
+  
+  .alis-label {
+    @apply text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70;
+  }
+  
+  .alis-input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm
+           ring-offset-background
+           placeholder:text-muted-foreground
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+           disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  
+  .alis-error {
+    @apply text-sm font-medium text-destructive;
+  }
+  
+  /* Button Variants */
+  .alis-btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium 
+           ring-offset-background transition-colors 
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+           disabled:pointer-events-none disabled:opacity-50;
+  }
+  
+  .alis-btn-primary {
+    @apply alis-btn h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+  
+  .alis-btn-secondary {
+    @apply alis-btn h-10 px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+  }
+  
+  /* Island Component */
+  .alis-island {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm p-6;
+  }
+}
+
