@@ -1,0 +1,49 @@
+@model Jamidon.Models.RemoteValidationViewModel
+@{
+    ViewData["Title"] = "Sample 9: Remote Validation";
+}
+<h1>Sample 9: Remote Validation</h1>
+    <p><strong>Concept:</strong> Server-side validation checks (username/email availability) with <code>data-val-remote</code></p>
+
+    <form asp-action="Sample9" asp-controller="Samples" hx-post hx-target="#result" hx-ext="framework">
+        <div class="form-group">
+            <label asp-for="Username"></label>
+            <input asp-for="Username" 
+                   name="Username"
+                   hx-post="/Samples/CheckUsername"
+                   hx-trigger="blur changed delay:500ms"
+                   hx-target="next span[data-valmsg-for='Username']"
+                   hx-swap="innerHTML"
+                   hx-sync="this:replace" />
+            <span asp-validation-for="Username" class="field-validation-error" data-valmsg-for="Username"></span>
+            <small style="color: #666;">Try: admin, test, or user (these are taken)</small>
+        </div>
+        
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" type="email"
+                   name="Email"
+                   hx-post="/Samples/CheckEmail"
+                   hx-trigger="blur changed delay:500ms"
+                   hx-target="next span[data-valmsg-for='Email']"
+                   hx-swap="innerHTML"
+                   hx-sync="this:replace" />
+            <span asp-validation-for="Email" class="field-validation-error" data-valmsg-for="Email"></span>
+            <small style="color: #666;">Try: test@example.com or admin@example.com (these are registered)</small>
+        </div>
+        
+        <button type="submit">Submit</button>
+        <div id="result"></div>
+    </form>
+
+    <div style="margin-top: 2rem; padding: 1rem; background: #f0f0f0; border-radius: 4px;">
+        <h4>How it works:</h4>
+        <ol>
+            <li>User types username or email</li>
+            <li>On blur, <code>data-val-remote</code> triggers server check</li>
+            <li>Server validates availability and returns JSON</li>
+            <li>Validation displays error if username/email is taken</li>
+            <li>Form submission is prevented if remote validation fails</li>
+            <li>Works seamlessly with other validators (required, email format)</li>
+        </ol>
+    </div>

@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "Sample 1: Basic Island";
+}
+
+<h1>Sample 1: Basic Island</h1>
+<p><strong>Concept:</strong> Alpine.js reactive island</p>
+
+<div class="island" x-data="{ count: 0, step: 1, increment() { this.count += this.step; }, decrement() { this.count -= this.step; }, reset() { this.count = 0; this.step = 1; } }">
+    <h3>Counter</h3>
+    <p>Count: <strong x-text="count"></strong></p>
+    <p>Step: <strong x-text="step"></strong></p>
+    <button @@click="increment()">+</button>
+    <button @@click="decrement()">-</button>
+    <button @@click="reset()">Reset</button>
+    <input type="number" x-model.number="step" style="width: 60px;">
+</div>
+
+<div style="margin-top: 2rem; padding: 1rem; background: #f0f0f0; border-radius: 4px;">
+    <h4>How it works:</h4>
+    <ol>
+        <li>Alpine.js provides reactivity out of the box</li>
+        <li>State and actions defined in <code>x-data</code></li>
+        <li>Click handlers call methods directly</li>
+        <li>All reactive - zero configuration needed!</li>
+    </ol>
+</div>
+

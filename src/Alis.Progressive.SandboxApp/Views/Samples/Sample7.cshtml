@@ -1,0 +1,100 @@
+@model Jamidon.Models.ComprehensiveValidatorModel
+@{
+    ViewData["Title"] = "Sample 7: All Built-in Validators";
+}
+<h1>Sample 7: All Built-in Validators</h1>
+    <p><strong>Concept:</strong> Demonstrates all .NET built-in validators working client-side and server-side</p>
+
+    <form asp-action="Sample7" asp-controller="Samples" hx-post hx-target="#result" hx-ext="framework">
+        <div class="form-group">
+            <label asp-for="RequiredField"></label>
+            <input asp-for="RequiredField" />
+            <span asp-validation-for="RequiredField" class="field-validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="EmailWithMultipleValidators"></label>
+            <input asp-for="EmailWithMultipleValidators" type="email" />
+            <span asp-validation-for="EmailWithMultipleValidators" class="field-validation-error"></span>
+            <small style="color: #666;">Required + Email + MaxLength(100)</small>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PasswordWithMultipleValidators"></label>
+            <input asp-for="PasswordWithMultipleValidators" type="password" />
+            <span asp-validation-for="PasswordWithMultipleValidators" class="field-validation-error"></span>
+            <small style="color: #666;">Required + StringLength(8-20) + Regex (uppercase, lowercase, number)</small>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Age"></label>
+            <input asp-for="Age" type="number" />
+            <span asp-validation-for="Age" class="field-validation-error"></span>
+            <small style="color: #666;">Range(18, 120)</small>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="WebsiteUrl"></label>
+            <input asp-for="WebsiteUrl" type="url" />
+            <span asp-validation-for="WebsiteUrl" class="field-validation-error"></span>
+            <small style="color: #666;">Url validator</small>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PhoneNumber"></label>
+            <input asp-for="PhoneNumber" type="tel" />
+            <span asp-validation-for="PhoneNumber" class="field-validation-error"></span>
+            <small style="color: #666;">Phone validator</small>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="CreditCard"></label>
+            <input asp-for="CreditCard" />
+            <span asp-validation-for="CreditCard" class="field-validation-error"></span>
+            <small style="color: #666;">CreditCard validator</small>
+        </div>
+
+        <div class="form-group">
+            <label>Tags (MinLength: 3, MaxLength: 10)</label>
+            <input type="text" name="Tags[0]" placeholder="Tag 1" />
+            <input type="text" name="Tags[1]" placeholder="Tag 2" />
+            <input type="text" name="Tags[2]" placeholder="Tag 3" />
+            <input type="text" name="Tags[3]" placeholder="Tag 4" />
+            <span asp-validation-for="Tags" class="field-validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label>Checkbox Options (Must select at least 2)</label>
+            <div class="checkbox-group">
+                <input type="checkbox" name="CheckboxOptions" value="Option1" id="opt1" data-val="true" data-val-minselection="You must select at least 2 options" data-val-minselection-min="2" />
+                <label for="opt1">Option 1</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" name="CheckboxOptions" value="Option2" id="opt2" />
+                <label for="opt2">Option 2</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" name="CheckboxOptions" value="Option3" id="opt3" />
+                <label for="opt3">Option 3</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" name="CheckboxOptions" value="Option4" id="opt4" />
+                <label for="opt4">Option 4</label>
+            </div>
+            <span asp-validation-for="CheckboxOptions" class="field-validation-error"></span>
+        </div>
+
+        <button type="submit">Submit</button>
+        <div id="result"></div>
+    </form>
+
+    <div style="margin-top: 2rem; padding: 1rem; background: #f0f0f0; border-radius: 4px;">
+        <h4>How it works:</h4>
+        <ol>
+            <li>All validators work both client-side (via data-val-* attributes) and server-side</li>
+            <li>Multiple validators can be applied to the same field</li>
+            <li>Custom MinSelection validator for checkboxes (must select at least 2)</li>
+            <li>Server-side validation returns Problem Details on 400 errors</li>
+            <li>Client-side validation prevents form submission if errors exist</li>
+        </ol>
+    </div>

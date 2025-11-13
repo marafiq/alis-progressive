@@ -1,0 +1,51 @@
+@model Jamidon.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Sample 8: Island Re-render Without HTMX";
+}
+<h1>Sample 8: Island Re-render Via HTMX</h1>
+    <p><strong>Concept:</strong> Island rendered initially, then re-rendered via HTMX form submission. Validation works both client and server side.</p>
+
+    <island>
+        <script type="application/json" data-store>
+        {
+            "submitted": false,
+            "message": ""
+        }
+        </script>
+        <div>
+            <form asp-action="Sample8" asp-controller="Samples" method="post" hx-post hx-target="body" hx-swap="outerHTML" hx-ext="framework">
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" type="email" />
+                    <span asp-validation-for="Email" class="field-validation-error"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" type="password" />
+                    <span asp-validation-for="Password" class="field-validation-error"></span>
+                </div>
+                
+                <button type="submit">Submit (HTMX POST)</button>
+            </form>
+            
+            @if (ViewData["Success"] != null)
+            {
+                <div class="success">
+                    @ViewData["Success"]
+                </div>
+            }
+        </div>
+    </island>
+
+    <div style="margin-top: 2rem; padding: 1rem; background: #f0f0f0; border-radius: 4px;">
+        <h4>How it works:</h4>
+        <ol>
+            <li>Island is rendered initially on page load</li>
+            <li>Form has client-side validation (works on blur/submit)</li>
+            <li>Form submits via HTMX (hx-post)</li>
+            <li>HTMX validates using hx-validate + our custom data-val-* validation</li>
+            <li>Server validates and returns Problem Details or re-renders island</li>
+            <li>Validation still works after HTMX swap</li>
+        </ol>
+    </div>

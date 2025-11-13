@@ -1,0 +1,93 @@
+@{
+    ViewData["Title"] = "Sample 3: HTMX Behavior Hooks";
+}
+
+@section Styles {
+<style>
+    .loading { opacity: 0.6; }
+    #log { margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 4px; font-family: monospace; font-size: 0.875rem; max-height: 200px; overflow-y: auto; }
+</style>
+}
+
+<h1>Sample 3: HTMX Behavior Hooks</h1>
+    <p><strong>Concept:</strong> Multiple comma-separated functions for before, success, error events</p>
+
+    <button hx-get="@Url.Action("Sample3Success", "Samples")"
+            hx-target="#result"
+            hx-ext="framework"
+            data-hx-before="showLoading,logRequest,validateState"
+            data-hx-success="hideLoading,showSuccess,trackEvent"
+            data-hx-error="hideLoading,showError,reportError">
+        Load Data (Success)
+    </button>
+
+    <button hx-get="@Url.Action("Sample3Error", "Samples")"
+            hx-target="#result"
+            hx-ext="framework"
+            data-hx-before="showLoading,logRequest"
+            data-hx-success="hideLoading,showSuccess"
+            data-hx-error="hideLoading,showError,reportError">
+        Load Data (Error)
+    </button>
+
+    <div id="result"></div>
+    <div id="log"></div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${time}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function showLoading(event) {
+            log('→ showLoading');
+            event.target.classList.add('loading');
+        }
+        
+        function hideLoading(event) {
+            log('→ hideLoading');
+            event.target.classList.remove('loading');
+        }
+        
+        function logRequest(event) {
+            log('→ logRequest: Request initiated');
+        }
+        
+        function validateState(event) {
+            log('→ validateState: State OK');
+        }
+        
+        function showSuccess(event) {
+            log('✓ showSuccess');
+            document.getElementById('result').innerHTML = '<div class="success">Success!</div>';
+        }
+        
+        function showError(event) {
+            log('✗ showError');
+            document.getElementById('result').innerHTML = '<div class="error">Error occurred!</div>';
+        }
+        
+        function trackEvent(event) {
+            log('→ trackEvent: Event tracked');
+        }
+        
+        function reportError(event) {
+            log('→ reportError: Error reported to server');
+        }
+        
+        log('Ready. Click buttons to test behavior hooks.');
+    </script>
+
+    <div style="margin-top: 2rem; padding: 1rem; background: #f0f0f0; border-radius: 4px;">
+        <h4>How it works:</h4>
+        <ol>
+            <li>HTMX extension (in core bundle) reads <code>data-hx-before/success/error</code></li>
+            <li>Splits comma-separated function names</li>
+            <li>Calls each function in order (left to right)</li>
+            <li>Error in one function doesn't stop others</li>
+            <li>All automatic - no manual wiring needed!</li>
+        </ol>
+    </div>
+

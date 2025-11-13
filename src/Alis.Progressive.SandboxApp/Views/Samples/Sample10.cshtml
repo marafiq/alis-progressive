@@ -1,0 +1,43 @@
+@model Jamidon.Models.RemoteValidationViewModel
+@{
+    ViewData["Title"] = "Sample 10: Remote Validation ([Remote] Attribute)";
+}
+<h1>Sample 10: Remote Validation ([Remote] Attribute)</h1>
+    <p><strong>Concept:</strong> Using ASP.NET Core's <code>[Remote]</code> attribute for client and server-side validation.</p>
+
+    <form asp-action="Sample10" asp-controller="Samples" hx-post hx-target="#result" hx-swap="innerHTML" hx-ext="framework">
+        <div class="form-group">
+            <label asp-for="Username"></label>
+            <input asp-for="Username" type="text" />
+            <span asp-validation-for="Username" class="field-validation-error"></span>
+            <small style="color: #666;">Try: admin, test, or user (these are taken)</small>
+        </div>
+        
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" type="email" />
+            <span asp-validation-for="Email" class="field-validation-error"></span>
+            <small style="color: #666;">Try: test@example.com or admin@example.com (these are registered)</small>
+        </div>
+        
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" type="password" />
+            <span asp-validation-for="Password" class="field-validation-error"></span>
+        </div>
+        
+        <button type="submit">Register</button>
+        <div id="result"></div>
+    </form>
+
+    <div style="margin-top: 2rem; padding: 1rem; background: #f0f0f0; border-radius: 4px;">
+        <h4>How it works:</h4>
+        <ol>
+            <li><code>[Remote]</code> attribute on model properties generates <code>data-val-remote</code> attributes</li>
+            <li>Client-side validation (<code>validation.js</code>) makes async POST request to server endpoint</li>
+            <li>Server returns <code>{ valid: true/false }</code> JSON response</li>
+            <li>Error message displayed if <code>valid: false</code></li>
+            <li>Server-side validation also checks <code>[Remote]</code> attribute on form submission</li>
+            <li>Works seamlessly with other validators (required, email format, string length)</li>
+        </ol>
+    </div>

@@ -1,0 +1,67 @@
+@{
+    ViewData["Title"] = "Sample 5: Server State Update";
+}
+<h1>Sample 5: Server State Updates</h1>
+    <p><strong>Concept:</strong> Server returns HTML + state payload, calls store function to update state</p>
+
+    <div class="island" data-island-id="dynamic-island" x-data="{ items: [], total: 0, loading: false, updateFromServer(payload) { Object.assign(this, payload); } }">
+        <h3>Dynamic Content</h3>
+        <p>Total Items: <strong x-text="total"></strong></p>
+        <p x-show="loading">Loading...</p>
+        
+        <button 
+            @@click="loading = true"
+            hx-post="@Url.Action("Sample5LoadItems", "Samples")" 
+            hx-swap="none"
+            hx-ext="framework"
+            data-hx-success="handleStateUpdate">
+            Load Content
+        </button>
+        
+        <div id="items-container"></div>
+    </div>
+
+    <script>
+        function handleStateUpdate(evt) {
+            console.log('[Sample5] handleStateUpdate called', evt);
+            try {
+                const xhr = evt.detail.xhr;
+                console.log('[Sample5] Response status:', xhr.status);
+                console.log('[Sample5] Response text:', xhr.responseText);
+                
+                const response = JSON.parse(xhr.responseText);
+                console.log('[Sample5] Parsed response:', response);
+                
+                if (response.html) {
+                    console.log('[Sample5] Updating HTML');
+                    document.getElementById('items-container').innerHTML = response.html;
+                }
+                
+                if (response.statePayload) {
+                    console.log('[Sample5] Updating state with:', response.statePayload);
+                    const island = document.querySelector('[data-island-id="dynamic-island"]');
+                    console.log('[Sample5] Island found:', island);
+                    if (island && island._x_dataStack && island._x_dataStack[0]) {
+                        console.log('[Sample5] Calling updateFromServer');
+                        island._x_dataStack[0].updateFromServer(response.statePayload);
+                        console.log('[Sample5] State updated');
+                    } else {
+                        console.error('[Sample5] Alpine not initialized or island not found');
+                    }
+                }
+            } catch (e) {
+                console.error('[Sample5] Failed to update state:', e);
+            }
+        }
+    </script>
+
+    <div style="margin-top: 2rem; padding: 1rem; background: #f0f0f0; border-radius: 4px;">
+        <h4>How it works:</h4>
+        <ol>
+            <li>Store MUST have <code>updateFromServer(payload)</code> function</li>
+            <li>HTMX makes request, server returns JSON with <code>html</code> + <code>statePayload</code></li>
+            <li>HTML is swapped into DOM</li>
+            <li>Call <code>store.getState().updateFromServer(statePayload)</code></li>
+            <li>Store updates, Alpine reacts automatically!</li>
+        </ol>
+    </div>

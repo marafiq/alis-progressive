@@ -1,0 +1,159 @@
+@model Jamidon.Models.ConditionalValidationViewModel
+@{
+    ViewData["Title"] = "Sample 12: Comprehensive Conditional Validation";
+}
+<h1>🎯 Comprehensive Conditional Validation Examples</h1>
+    <p><strong>Demonstrating:</strong> RequiredIf, RequiredUnless, Multiple Conditions, Client & Server Validation</p>
+
+    <form asp-action="Sample12Comprehensive" asp-controller="Samples" 
+          hx-post hx-target="#result" hx-swap="innerHTML" hx-ext="framework"
+          x-data="{
+              acceptTerms: false,
+              country: '',
+              userType: 'Standard',
+              hasAccount: false
+          }">
+
+        <!-- Always Required Field -->
+        <div class="section">
+            <h3>📧 Required Field (Always)</h3>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" type="email" />
+                <span asp-validation-for="Email" class="field-validation-error"></span>
+                <small>This field is always required - standard validation</small>
+            </div>
+        </div>
+
+        <!-- Example 1: Checkbox-based RequiredIf -->
+        <div class="section">
+            <h3>✅ Example 1: Checkbox-based RequiredIf</h3>
+            <div class="highlight">
+                <code>[RequiredIf(nameof(AcceptTerms), true)]</code>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="AcceptTerms" name="AcceptTerms" value="true" 
+                           x-model="acceptTerms" style="width: auto;" />
+                    <span asp-for="AcceptTerms"></span>
+                </label>
+                <span asp-validation-for="AcceptTerms" class="field-validation-error"></span>
+            </div>
+            
+            <div class="form-group" id="phoneGroup" x-show="acceptTerms">
+                <label asp-for="PhoneNumber"></label>
+                <input asp-for="PhoneNumber" type="tel" x-validate-when="acceptTerms" />
+                <span asp-validation-for="PhoneNumber" class="field-validation-error"></span>
+                <small>✨ Phone is REQUIRED only when checkbox is checked</small>
+            </div>
+        </div>
+
+        <!-- Example 2: Dropdown-based RequiredIf -->
+        <div class="section">
+            <h3>🌍 Example 2: Dropdown-based RequiredIf</h3>
+            <div class="highlight">
+                <code>[RequiredIf(nameof(Country), "USA")]</code> and 
+                <code>[RequiredIf(nameof(Country), "Canada")]</code>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Country"></label>
+                <select asp-for="Country" x-model="country">
+                    <option value="">-- Select Country --</option>
+                    <option value="USA">United States</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Mexico">Mexico</option>
+                    <option value="Other">Other</option>
+                </select>
+                <span asp-validation-for="Country" class="field-validation-error"></span>
+            </div>
+            
+            <div class="form-group" x-show="country === 'USA'">
+                <label asp-for="State"></label>
+                <input asp-for="State" x-validate-when="country === 'USA'" />
+                <span asp-validation-for="State" class="field-validation-error"></span>
+                <small>✨ State is REQUIRED only when country is USA</small>
+            </div>
+            
+            <div class="form-group" x-show="country === 'Canada'">
+                <label asp-for="Province"></label>
+                <input asp-for="Province" x-validate-when="country === 'Canada'" />
+                <span asp-validation-for="Province" class="field-validation-error"></span>
+                <small>✨ Province is REQUIRED only when country is Canada</small>
+            </div>
+        </div>
+
+        <!-- Example 3: User Type Conditional -->
+        <div class="section">
+            <h3>👤 Example 3: User Type Conditional</h3>
+            <div class="highlight">
+                <code>[RequiredIf(nameof(UserType), "Premium")]</code>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="UserType"></label>
+                <select asp-for="UserType" x-model="userType">
+                    <option value="Standard">Standard</option>
+                    <option value="Premium">Premium</option>
+                    <option value="Enterprise">Enterprise</option>
+                </select>
+                <span asp-validation-for="UserType" class="field-validation-error"></span>
+            </div>
+            
+            <div class="form-group" x-show="userType === 'Premium'">
+                <label asp-for="CreditCard"></label>
+                <input asp-for="CreditCard" x-validate-when="userType === 'Premium'" />
+                <span asp-validation-for="CreditCard" class="field-validation-error"></span>
+                <small>✨ Credit card is REQUIRED only for Premium accounts</small>
+            </div>
+        </div>
+
+        <!-- Example 4: RequiredUnless (Inverse Logic) -->
+        <div class="section">
+            <h3>🔄 Example 4: RequiredUnless (Inverse Logic)</h3>
+            <div class="highlight">
+                <code>[RequiredUnless(nameof(HasExistingAccount), true)]</code>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="HasExistingAccount" name="HasExistingAccount" value="true" 
+                           x-model="hasAccount" style="width: auto;" />
+                    <span asp-for="HasExistingAccount"></span>
+                </label>
+                <span asp-validation-for="HasExistingAccount" class="field-validation-error"></span>
+            </div>
+            
+            <div class="form-group" x-show="!hasAccount">
+                <label asp-for="NewPassword"></label>
+                <input asp-for="NewPassword" type="password" x-validate-when="!hasAccount" />
+                <span asp-validation-for="NewPassword" class="field-validation-error"></span>
+                <small>✨ Password is REQUIRED UNLESS you have an existing account</small>
+            </div>
+        </div>
+
+        <button type="submit">Submit Form</button>
+        <div id="result"></div>
+    </form>
+
+    <div style="margin-top: 2rem; padding: 1.5rem; background: #e7f3ff; border-radius: 8px; border-left: 4px solid #0056b3;">
+        <h3>🎯 How It Works</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Client-Side:</strong> Alpine.js <code>x-validate-when</code> controls visibility & validation</li>
+            <li><strong>Server-Side:</strong> <code>[RequiredIf]</code> and <code>[RequiredUnless]</code> attributes validate automatically</li>
+            <li><strong>No Manual Code:</strong> Controllers have ZERO conditional logic - attributes handle everything!</li>
+            <li><strong>Form Submission:</strong> Blocked client-side if validation fails (no server request)</li>
+            <li><strong>Scalable:</strong> Add new conditions without changing controller code</li>
+        </ul>
+        
+        <h4>Test Scenarios:</h4>
+        <ol style="line-height: 1.8;">
+            <li>✅ Try submitting with empty email → Should fail (always required)</li>
+            <li>✅ Check "Accept Terms" but leave phone empty → Should fail</li>
+            <li>✅ Select "USA" but leave state empty → Should fail</li>
+            <li>✅ Select "Premium" but leave credit card empty → Should fail</li>
+            <li>✅ Leave "Has Account" unchecked but leave password empty → Should fail</li>
+            <li>✅ Fill all visible required fields → Should succeed!</li>
+        </ol>
+    </div>

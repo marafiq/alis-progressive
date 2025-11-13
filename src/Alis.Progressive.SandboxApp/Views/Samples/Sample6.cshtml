@@ -1,0 +1,41 @@
+@model Jamidon.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Sample 6: Cross-Field Validation";
+}
+<h1>Sample 6: Cross-Field Validation</h1>
+    <p><strong>Concept:</strong> Password confirmation with <code>data-val-equalto</code> (automatic!)</p>
+
+    <form id="passwordForm" 
+          asp-action="Sample6" 
+          asp-controller="Samples"
+          hx-post
+          hx-target="#result"
+          hx-swap="innerHTML"
+          hx-ext="framework">
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" type="password" />
+            <span asp-validation-for="Password" class="field-validation-error"></span>
+        </div>
+        
+        <div class="form-group">
+            <label asp-for="ConfirmPassword"></label>
+            <input asp-for="ConfirmPassword" type="password" />
+            <span asp-validation-for="ConfirmPassword" class="field-validation-error"></span>
+        </div>
+        
+        <button type="submit">Submit</button>
+        <div id="result"></div>
+    </form>
+
+    <div style="margin-top: 2rem; padding: 1rem; background: #f0f0f0; border-radius: 4px;">
+        <h4>How it works:</h4>
+        <ol>
+            <li><code>asp-for</code> generates <code>data-val-equalto</code> attribute on ConfirmPassword field</li>
+            <li><code>data-val-equalto-other</code> specifies which field to compare</li>
+            <li>Core bundle validation automatically validates on input/blur</li>
+            <li>Checks both fields whenever either one changes</li>
+            <li>Hidden fields are automatically skipped</li>
+            <li>Zero manual validation code!</li>
+        </ol>
+    </div>

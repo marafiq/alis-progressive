@@ -1,0 +1,57 @@
+@model Jamidon.Models.PriceValidationViewModel
+@{
+    ViewData["Title"] = "Sample 11: Price Validation (Decimal/Range)";
+}
+<h1>Sample 11: Price Validation (Decimal/Range)</h1>
+    <p><strong>Concept:</strong> Validating decimal/price values with range constraints (e.g., greater than $0.01, less than $999,999.99).</p>
+
+    <div class="info">
+        <strong>Valid Examples:</strong>
+        <ul>
+            <li>Price: $0.01, $10.50, $99.99, $1000.00</li>
+            <li>Discount: $0.01, $5.25, $50.00 (optional field)</li>
+        </ul>
+        <strong>Invalid Examples:</strong>
+        <ul>
+            <li>Price: $0.00, $0.005, $1000000.00, negative values</li>
+            <li>Discount: $0.00, $1000000.00 (if provided, must be in range)</li>
+        </ul>
+    </div>
+
+    <form asp-action="Sample11" asp-controller="Samples" hx-post hx-target="#result" hx-swap="innerHTML" hx-ext="framework" hx-validate="true">
+        <div class="form-group">
+            <label asp-for="ProductName"></label>
+            <input asp-for="ProductName" type="text" />
+            <span asp-validation-for="ProductName" class="field-validation-error"></span>
+        </div>
+        
+        <div class="form-group">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" type="number" step="0.01" min="0.01" max="999999.99" />
+            <span asp-validation-for="Price" class="field-validation-error"></span>
+            <small style="color: #666;">Must be between $0.01 and $999,999.99</small>
+        </div>
+        
+        <div class="form-group">
+            <label asp-for="Discount"></label>
+            <input asp-for="Discount" type="number" step="0.01" min="0.01" max="999999.99" />
+            <span asp-validation-for="Discount" class="field-validation-error"></span>
+            <small style="color: #666;">Optional: If provided, must be between $0.01 and $999,999.99</small>
+        </div>
+        
+        <button type="submit">Save Product</button>
+        <div id="result"></div>
+    </form>
+
+    <div style="margin-top: 2rem; padding: 1rem; background: #f0f0f0; border-radius: 4px;">
+        <h4>How it works:</h4>
+        <ol>
+            <li><code>[Range(0.01, 999999.99)]</code> attribute validates decimal values</li>
+            <li>Client-side validation checks range on blur and input</li>
+            <li>Supports decimal points (e.g., $10.50, $99.99)</li>
+            <li>Validates minimum value (greater than $0.01)</li>
+            <li>Validates maximum value (less than $999,999.99)</li>
+            <li>Server-side validation also enforces range constraints</li>
+            <li>Works with optional fields (Discount can be null, but if provided must be in range)</li>
+        </ol>
+    </div>

@@ -1,0 +1,35 @@
+@model Jamidon.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Sample 4: Problem Details";
+}
+<h1>Sample 4: Problem Details (RFC 7807)</h1>
+    <p><strong>Concept:</strong> Server returns 400 with Problem Details, HTMX extension maps errors automatically</p>
+
+    <form id="registerForm" asp-action="Sample4" asp-controller="Samples" hx-post hx-target="#result" hx-ext="framework">
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" type="email" />
+            <span asp-validation-for="Email" class="field-validation-error"></span>
+        </div>
+        
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" type="password" />
+            <span asp-validation-for="Password" class="field-validation-error"></span>
+        </div>
+        
+        <button type="submit">Submit (Trigger Error)</button>
+        <div id="result"></div>
+    </form>
+
+    <div style="margin-top: 2rem; padding: 1rem; background: #f0f0f0; border-radius: 4px;">
+        <h4>How it works:</h4>
+        <ol>
+            <li>Submit form with invalid data</li>
+            <li>Server returns 400 with Problem Details (RFC 7807)</li>
+            <li>HTMX extension automatically parses Problem Details</li>
+            <li>Maps errors to form fields using <code>data-valmsg-for</code></li>
+            <li>Adds <code>input-validation-error</code> class to invalid fields</li>
+            <li>Zero manual error handling code!</li>
+        </ol>
+    </div>
