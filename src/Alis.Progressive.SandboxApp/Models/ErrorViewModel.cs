@@ -1,4 +1,4 @@
-namespace Jamidon.Models;
+namespace Alis.Progressive.SandboxApp.Models;
 
 public class ErrorViewModel
 {

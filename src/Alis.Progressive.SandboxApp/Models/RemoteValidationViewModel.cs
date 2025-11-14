@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Jamidon.Models;
+namespace Alis.Progressive.SandboxApp.Models;
 
 public class RemoteValidationViewModel
 {

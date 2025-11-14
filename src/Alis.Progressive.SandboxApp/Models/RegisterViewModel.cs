@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Jamidon.Models;
+namespace Alis.Progressive.SandboxApp.Models;
 
 public class RegisterViewModel
 {

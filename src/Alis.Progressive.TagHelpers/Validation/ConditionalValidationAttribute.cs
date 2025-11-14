@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace Jamidon.Validation;
+namespace Alis.Progressive.TagHelpers.Validation;
 
 /// <summary>
 /// Base class for conditional validation attributes.

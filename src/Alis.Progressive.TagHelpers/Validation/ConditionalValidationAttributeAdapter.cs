@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.Localization;
 
-namespace Jamidon.Validation;
+namespace Alis.Progressive.TagHelpers.Validation;
 
 /// <summary>
 /// Adapter for conditional validation attributes to generate client-side validation metadata

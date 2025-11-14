@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Jamidon.Models;
+using Alis.Progressive.SandboxApp.Models;
 
-namespace Jamidon.Controllers;
+namespace Alis.Progressive.SandboxApp.Controllers;
 
 public class SamplesController : Controller
 {

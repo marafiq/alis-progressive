@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Jamidon.Validation;
+namespace Alis.Progressive.TagHelpers.Validation;
 
 /// <summary>
 /// Validates that a property is required UNLESS another property has a specific value.

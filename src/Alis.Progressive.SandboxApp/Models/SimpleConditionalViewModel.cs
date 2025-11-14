@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using Jamidon.Validation;
+using Alis.Progressive.TagHelpers.Validation;
 
-namespace Jamidon.Models;
+namespace Alis.Progressive.SandboxApp.Models;
 
 /// <summary>
 /// Simple conditional validation example - Phone required when terms accepted
