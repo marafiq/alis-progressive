@@ -4,11 +4,16 @@ A production-ready .NET 10 NuGet package providing progressive enhancement tag h
 
 ## 🏗️ Architecture
 
-- **Vite** for JavaScript bundling
+### Core Stack (Proven in Jamidon)
+- **HTMX** for declarative server communication
+- **Alpine.js** for reactive components (no additional state management libraries)
+- **Pure JavaScript Validation** (no external validation libraries like v8n or jQuery Validate)
 - **Tailwind CSS** for design system
-- **Alpine.js** for reactive components
-- **HTMX** for server interactions
 - **Tag Helpers** for declarative ASP.NET Core MVC components
+
+### Build Tools
+- **Vite** for JavaScript bundling
+- **.NET 10** for server-side rendering and validation
 
 ## 🚀 Getting Started
 
@@ -26,7 +31,11 @@ dotnet run
 dotnet test
 ```
 
-## 📦 Components
+## 📦 Components (Planned)
+
+### Core Tag Helpers
+- \<alis-scripts>\ - Framework scripts loader (HTMX + Alpine + Validation)
+- \<alis-styles>\ - Tailwind CSS bundle loader
 
 ### Layout Components
 - \<alis-container>\ - Responsive container
@@ -34,10 +43,11 @@ dotnet test
 - \<alis-grid-item>\ - Grid items
 
 ### Form Components
-- \<alis-form>\ - HTMX-enabled forms
+- \<alis-form>\ - HTMX-enabled forms with automatic validation
 - \<alis-form-group>\ - Form field groups
 - \<alis-input>\ - Enhanced inputs with validation
-- \<alis-island>\ - Alpine.js reactive islands
+- \<alis-textarea>\ - Enhanced textareas
+- \<alis-select>\ - Enhanced select dropdowns
 
 ## 🧪 Development Rules
 
