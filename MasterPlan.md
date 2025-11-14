@@ -44,9 +44,9 @@ This framework provides a progressive enhancement approach to building modern we
 - **Progressive Enhancement**: Start with static HTML, add interactivity only where needed
 - **Declarative Over Imperative**: Use HTML attributes to define behavior, not JavaScript
 - **Server-First**: Leverage .NET 10's static rendering capabilities
-- **Simple State Management**: Use Zustand directly for good state API, no wrappers
+- **Simple State Management**: Alpine.js for reactive components, no additional libraries
 - **Bidirectional Validation**: Client-side validation for UX, server-side validation for security
-- **No Re-invention**: Use existing tools as-is, avoid unnecessary complexity
+- **Pure JavaScript**: No external validation libraries, production-grade vanilla JS
 
 ## Architecture Goals
 
@@ -64,12 +64,12 @@ This framework provides a progressive enhancement approach to building modern we
 - No middleware needed - HTMX handles methods natively
 - Custom behavior hooks for lifecycle management (comma-separated)
 
-### 3. Simple State Management
+### 3. Simple State Management with Alpine.js
 
-- Zustand stores are simple and local to each island
-- Direct Zustand usage with Alpine.js for reactivity
-- Alpine.js only when needed for interactivity
-- Server can update state after fragment loads
+- Alpine.js for reactive state management within components
+- Use `x-data` for component-local state
+- Declarative reactivity with Alpine directives (`x-show`, `x-text`, `x-model`, etc.)
+- No additional state management libraries needed
 
 ### 4. Unified Validation System
 
@@ -115,42 +115,31 @@ Custom HTMX extension (`framework-extension.js`) provides:
 3. Automatic validation attachment after DOM swaps
 4. Prevention of form submission when client-side validation fails
 
-### Island Pattern with Tag Helpers
+### Alpine.js Components
 
-The `IslandTagHelper` enables composable island components with integrated state management:
+Alpine.js provides reactive components with simple `x-data` for state management:
 
 **Usage** (in Razor view):
 ```html
-<island>
-    <script type="application/json" data-store>
-        {
-            "count": 0,
-            "step": 1
-        }
-    </script>
-    <div>
-        <p>Count: <span x-text="count"></span></p>
-        <button @click="increment()">+</button>
-    </div>
-</island>
+<div x-data="{ count: 0, step: 1 }">
+    <p>Count: <span x-text="count"></span></p>
+    <p>Step: <span x-text="step"></span></p>
+    <button @click="count += step">+</button>
+    <button @click="count -= step">-</button>
+</div>
 ```
 
-**Rendered Output**:
+**For Conditional Visibility**:
 ```html
-<script>
-var islandStore123 = (() => {
-    const { create } = zustand;
-    return create((set) => ({
-        count: 0,
-        step: 1,
-        increment: () => set((state) => ({ count: state.count + state.step }))
-    }));
-})();
-</script>
-<div data-island-id="island-123" x-data="islandStore123">
-    <p>Count: <span x-text="count"></span></p>
-    <button @click="increment()">+</button>
-</div>
+<form x-data="{ acceptTerms: false }">
+    <input type="checkbox" asp-for="AcceptTerms" x-model="acceptTerms" />
+    
+    <div x-show="acceptTerms" x-transition>
+        <input asp-for="PhoneNumber" 
+               x-bind:data-should-validate="acceptTerms" />
+        <span asp-validation-for="PhoneNumber"></span>
+    </div>
+</form>
 ```
 
 ### Validation System
@@ -212,25 +201,26 @@ HTMX Error Handler
 Display Errors in Form
 ```
 
-### Cross-Island Communication
+### Cross-Component Communication
 
-**Pattern**: Use DOM body with custom events. By default, no events are fired.
+Alpine.js components can communicate via:
 
-```html
-<!-- Island 1: Publisher -->
-<button @click="publishEvent()">Publish</button>
-
-<!-- Island 2: Subscriber -->
-<div x-text="message"></div>
-
-<script>
-function publishEvent() {
-    document.body.dispatchEvent(new CustomEvent('island-event', {
-        detail: { data: 'Hello' }
-    }));
-}
-</script>
+1. **Shared State** (Alpine Store):
+```javascript
+Alpine.store('global', {
+    message: ''
+});
 ```
+
+2. **Custom Events**:
+```html
+<button @click="$dispatch('custom-event', { data: 'Hello' })">Publish</button>
+
+<div @custom-event="message = $event.detail.data" x-text="message"></div>
+```
+
+3. **Server-Side Coordination** (Preferred):
+Use HTMX to coordinate via server when possible.
 
 ## Usage Examples
 
@@ -305,14 +295,14 @@ public class ConditionalViewModel
 - **Response Handling**: Return partial views or Problem Details
 - **Extension Handles**: Problem Details parsing, error display, validation attachment
 
-### Island Guidelines
+### Alpine.js Guidelines
 
-- **Composable Structure**: Use `<island><script data-store></script>content</island>` pattern
-- **Store Script**: JSON initial state
-- **Tag Helper**: Wraps JSON in Zustand pattern, assigns to variable, uses in x-data
-- **Initialization**: Store initializes before island div renders
-- **Auto-Binding**: Alpine.js automatically binds via `x-data`
-- **Isolation**: Keep islands independent
+- **Use x-data**: Component-local state with simple JavaScript objects
+- **Declarative Directives**: `x-show`, `x-text`, `x-model`, `x-bind`, etc.
+- **Conditional Visibility**: Use `x-show` with `x-transition` for smooth animations
+- **Dynamic Attributes**: Use `x-bind:data-should-validate` for validation control
+- **Event Handling**: Use `@click`, `@submit`, `$dispatch` for events
+- **Keep It Simple**: No complex stores unless truly needed
 
 ## JavaScript Files
 
@@ -329,8 +319,8 @@ This framework provides a modern, progressive approach to building web applicati
 
 - **Static Rendering** for performance
 - **HTMX** for declarative client-server communication
-- **Zustand + Alpine.js** for reactive islands
-- **Pure JavaScript Validation** with conditional support
+- **Alpine.js** for reactive components (no additional state libraries)
+- **Pure JavaScript Validation** with conditional support (no external validation libraries)
 - **Problem Details** for unified error handling
 - **Simple Patterns** - no unnecessary complexity
 
@@ -347,11 +337,13 @@ Developers can build interactive applications with minimal JavaScript while main
 ## Lessons Learned from Jamidon
 
 1. **Test-Driven Development**: All 22 Playwright tests passing before considering work complete
-2. **Pure JavaScript Over Libraries**: Removed v8n, implemented pure JS validation - more maintainable
-3. **Conditional Validation**: Required both client and server implementations with proper attribute adapters
-4. **Alpine.js Integration**: Use `x-bind:data-should-validate` for dynamic field visibility
-5. **HTMX Form Prevention**: Check validation in `htmx:configRequest` to prevent submission
-6. **Problem Details DOM**: Preserve validation message structure when rendering server errors
-7. **Layout Consolidation**: Single `_Layout.cshtml` with all scripts reduces duplication
-8. **Production Mindset**: No compromises on test quality, scalability, or code cleanliness
+2. **No External Validation Libraries**: Pure JavaScript validation is more maintainable than v8n or jQuery Validate
+3. **No State Management Libraries**: Alpine.js `x-data` is sufficient, no need for Zustand or Redux
+4. **Conditional Validation**: Required both client and server implementations with proper attribute adapters
+5. **Alpine.js Integration**: Use `x-bind:data-should-validate` for dynamic field visibility
+6. **HTMX Form Prevention**: Check validation in `htmx:configRequest` to prevent submission
+7. **Problem Details DOM**: Preserve validation message structure when rendering server errors
+8. **Layout Consolidation**: Single `_Layout.cshtml` with all scripts reduces duplication
+9. **Production Mindset**: No compromises on test quality, scalability, or code cleanliness
+10. **Keep It Simple**: Three JavaScript files (37KB total) handle entire framework - no bloat
 
